@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+  <changeSet id="1.1" author="bovin">
+    <createTable
+      tableName="users">
+      <column name="id" type="BIGINT" autoIncrement="true">
+        <constraints primaryKey="true"/>
+      </column>
+      <column name="is_moderator" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="reg_time" type="DATETIME">
+        <constraints nullable="false"/>
+      </column>
+      <column name="name" type="varchar(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="email" type="varchar(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="password" type="varchar(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="code" type="varchar(255)">
+      </column>
+      <column name="photo" type="varchar(255)">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+
+  <changeSet id="1.2" author="bovin">
+    <createTable
+      tableName="posts">
+      <column name="id" type="BIGINT" autoIncrement="true">
+        <constraints primaryKey="true"/>
+      </column>
+      <column name="is_active" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="moderation_status" type="varchar(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="moderator_id" type="int"/>
+      <column name="user_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="title" type="varchar(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="text" type="varchar(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="time" type="DATETIME">
+        <constraints nullable="false"/>
+      </column>
+      <column name="view_count" type="int">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+
+  <changeSet id="1.3" author="bovin">
+    <createTable
+      tableName="tags">
+      <column name="id" type="BIGINT" autoIncrement="true">
+        <constraints primaryKey="true"/>
+      </column>
+      <column name="name" type="varchar(255)">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+
+  <changeSet id="1.4" author="bovin">
+    <createTable
+      tableName="post_comments">
+      <column name="id" type="BIGINT" autoIncrement="true">
+        <constraints primaryKey="true"/>
+      </column>
+      <column name="parent_id" type="int"/>
+      <column name="post_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="user_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="time" type="DATETIME">
+        <constraints nullable="false"/>
+      </column>
+      <column name="text" type="varchar(255)">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+
+  <changeSet id="1.5" author="bovin">
+    <createTable
+      tableName="captcha_codes">
+      <column name="id" type="BIGINT" autoIncrement="true">
+        <constraints primaryKey="true"/>
+      </column>
+      <column name="time" type="DATETIME">
+        <constraints nullable="false"/>
+      </column>
+      <column name="code" type="TINYTEXT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="secret_code" type="TINYTEXT">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+
+  <changeSet id="1.6" author="bovin">
+    <createTable
+      tableName="global_settings">
+      <column name="id" type="BIGINT" autoIncrement="true">
+        <constraints primaryKey="true"/>
+      </column>
+      <column name="code" type="VARCHAR(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="name" type="VARCHAR(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="value" type="VARCHAR(255)">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+
+  <changeSet id="1.7" author="bovin">
+    <createTable
+      tableName="post_votes">
+      <column name="id" type="BIGINT" autoIncrement="true">
+        <constraints primaryKey="true"/>
+      </column>
+      <column name="user_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="post_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="time" type="DATETIME">
+        <constraints nullable="false"/>
+      </column>
+      <column name="value" type="TINYINT">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+
+  <changeSet id="1.8" author="bovin">
+    <createTable
+      tableName="tag2post">
+      <column name="id" type="BIGINT" autoIncrement="true">
+        <constraints primaryKey="true"/>
+      </column>
+      <column name="post_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="tag_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+
+  <changeSet id="1.9" author="bovin">
+    <addForeignKeyConstraint baseTableName="posts" baseColumnNames="user_id"
+      constraintName="fk_user_post"
+      referencedTableName="users" referencedColumnNames="id"/>
+    <addForeignKeyConstraint baseTableName="post_votes" baseColumnNames="user_id"
+      constraintName="fk_user_votes"
+      referencedTableName="users" referencedColumnNames="id"/>
+    <addForeignKeyConstraint baseTableName="post_votes" baseColumnNames="post_id"
+      constraintName="fk_post_votes"
+      referencedTableName="posts" referencedColumnNames="id"/>
+    <addForeignKeyConstraint baseTableName="tag2post" baseColumnNames="tag_id"
+      constraintName="fk_tag_post"
+      referencedTableName="tags" referencedColumnNames="id"/>
+    <addForeignKeyConstraint baseTableName="tag2post" baseColumnNames="post_id"
+      constraintName="fk_post_tag"
+      referencedTableName="posts" referencedColumnNames="id"/>
+    <addForeignKeyConstraint baseTableName="post_comments" baseColumnNames="post_id"
+      constraintName="fk_post_comments"
+      referencedTableName="posts" referencedColumnNames="id"/>
+    <addForeignKeyConstraint baseTableName="post_comments" baseColumnNames="user_id"
+      constraintName="fk_user_comments"
+      referencedTableName="users" referencedColumnNames="id"/>
+  </changeSet>
+</databaseChangeLog>
